@@ -1,18 +1,15 @@
-const app = require("./app");
-const { connection } = require("./models/connection");
+const app = require('./app')
+const mongoose = require("mongoose")
 
-require("dotenv").config();
 
-const PORT = process.env.PORT || 3000;
+const { DB_HOST, PORT = 3000 } = process.env;
 
-const startApp = async () => {
-  try {
-    await connection();
-    app.listen(PORT, () => console.log("Database connection successful"));
-  } catch (error) {
-    console.log(`Server not running. Error message: ${error.message}`);
-    process.exit(1);
-  }
-};
-
-startApp();
+mongoose.connect(DB_HOST)
+  .then(() => {
+    console.log("Database connection successful")
+    app.listen(PORT)
+  })
+  .catch(error => {
+    console.log(error.message);
+    process.exit(1)
+  })
