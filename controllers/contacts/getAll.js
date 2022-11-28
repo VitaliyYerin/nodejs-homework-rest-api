@@ -1,20 +1,11 @@
-const { contacts: contactsOperations } = require("../../service");
+const { Contact } = require("../../models/contact")
 
 const getAll = async (req, res) => {
-  const { _id: userId } = req.user;
-  let { page = 1, limit = 10, favorite } = req.query;
-
-  const skip = (parseInt(page) - 1) * limit;
-  limit = parseInt(limit) > 20 ? 20 : limit;
-
-  const contacts = await contactsOperations.getAllContacts(
-    userId,
-    skip,
-    limit,
-    favorite
-  );
-
-  res.status(200).json({ contacts, page, limit });
-};
+    const { _id: owner } = req.user;
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (page - 1) * limit;
+    const result = await Contact.find({ owner }, "", { skip, limit }).populate("owner", "email");
+    res.json(result)
+}
 
 module.exports = getAll;
