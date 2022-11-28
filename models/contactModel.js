@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { Schema } = require("mongoose");
 
 const contactSchema = new mongoose.Schema(
   {
@@ -8,22 +9,27 @@ const contactSchema = new mongoose.Schema(
     },
     email: {
       type: String,
+      unique: [true, "email in use"],
+      required: true,
     },
     phone: {
       type: String,
+      required: true,
     },
     favorite: {
       type: Boolean,
       default: false,
     },
     owner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true }
 );
 
 const Contact = mongoose.model("Contact", contactSchema);
 
-module.exports = { Contact };
+module.exports = {
+  Contact,
+};
